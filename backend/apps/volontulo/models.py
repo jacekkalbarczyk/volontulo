@@ -6,7 +6,6 @@
 
 import logging
 import os
-# pylint: disable=unused-import
 import uuid
 
 from django.conf import settings
@@ -276,10 +275,25 @@ class UserProfile(models.Model):
         return self.user.email
 
 
+def uuid_image_name(prefix):
+    """Upload to function decorator.
+
+    Prefix is a directory, that file will be saved in.
+    """
+    def upload_to(_, filename):
+        """Actual uload_to function, that use prefix from outer scope."""
+        _, file_extension = os.path.splitext(filename)
+        return os.path.join(
+            prefix,
+            '{}{}'.format(uuid.uuid4(), file_extension),
+        )
+    return upload_to
+
+
 class UserGallery(models.Model):
     """Handling user images."""
     userprofile = models.ForeignKey(UserProfile, related_name='images')
-    image = models.ImageField(upload_to='profile/')
+    image = models.ImageField(upload_to=uuid_image_name('profiles'))
     is_avatar = models.BooleanField(default=False)
 
     def __str__(self):
@@ -290,51 +304,13 @@ class UserGallery(models.Model):
 class OfferImage(models.Model):
     """Handling offer image."""
     offer = models.ForeignKey(Offer, related_name='images')
-    path = models.ImageField(upload_to='offers/')
+    path = models.ImageField(upload_to=uuid_image_name('offers'))
     is_main = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         """String representation of an image."""
         return str(self.path)
-
-
-class OrganizationGallery(models.Model):
-    """Handling organizations gallery."""
-    organization = models.ForeignKey(Organization, related_name='images')
-    published_by = models.ForeignKey(UserProfile, related_name='gallery')
-    path = models.ImageField(upload_to='gallery/')
-    is_main = models.BooleanField(default=False, blank=True)
-
-    def __str__(self):
-        """String representation of an image."""
-        return str(self.path)
-
-    def remove(self):
-        """Remove image."""
-        self.remove()
-
-    def set_as_main(self, organization):
-        """Save image as main.
-
-        :param organization: Organization model instance
-        """
-        OrganizationGallery.objects.filter(
-            organization_id=organization.id
-        ).update(is_main=False)
-        self.is_main = True
-        self.save()
-
-    @staticmethod
-    def get_organizations_galleries(userprofile):
-        """Get images grouped by organizations
-
-        :param userprofile: UserProfile model instance
-        """
-        organizations = Organization.objects.filter(
-            userprofiles=userprofile
-        ).all()
-        return {o.name: o.images.all() for o in organizations}
 
 
 class Page(models.Model):
