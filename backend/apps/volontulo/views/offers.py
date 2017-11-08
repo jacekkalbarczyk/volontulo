@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from django.views.generic import View
 
@@ -90,14 +91,14 @@ class OffersCreate(View):
         organizations = request.user.userprofile.organizations.all()
 
         if not organizations.exists():
-            messages.info(
-                request,
+            messages.info(request, mark_safe(
                 "Nie masz jeszcze żadnej założonej organizacji"
-                " na volontuloapp.org. Aby założyć organizację,"
-                " <a href='{}'>kliknij tu.</a>".format(
+                " na {0}. Aby założyć organizację,"
+                " <a href='{1}'>kliknij tu.</a>".format(
+                    settings.SYSTEM_DOMAIN,
                     reverse('organizations_create')
                 )
-            )
+            ))
             return redirect('offers_list')
 
         return render(
