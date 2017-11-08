@@ -165,16 +165,23 @@ class Offer(models.Model):
         """Determine action status by offer dates."""
         if (
                 (
+                    self.started_at and
                     self.finished_at and
                     self.started_at < timezone.now() < self.finished_at
                 ) or
                 (
+                    self.started_at and
                     self.started_at < timezone.now() and
                     not self.finished_at
+                ) or
+                (
+                    self.finished_at and
+                    self.finished_at > timezone.now() and
+                    not self.started_at
                 )
         ):
             return 'ongoing'
-        if self.started_at > timezone.now():
+        if self.started_at and self.started_at > timezone.now():
             return 'future'
         return 'finished'
 
