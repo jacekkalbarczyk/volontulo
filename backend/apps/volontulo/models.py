@@ -164,14 +164,18 @@ class Offer(models.Model):
     def determine_action_status(self):
         """Determine action status by offer dates."""
         if self.started_at:
-            if self.finished_at and \
-               self.started_at < timezone.now() < self.finished_at:
-                return 'ongoing'
-            elif self.started_at < timezone.now():
-                return 'ongoing'
-            elif self.started_at > timezone.now():
+            if self.started_at > timezone.now():
                 return 'future'
-        return 'finished'
+            elif not self.finished_at:
+                return 'ongoing'
+        if self.finished_at:
+            if self.finished_at < timezone.now():
+                return 'finished'
+            elif not self.started_at:
+                return 'ongoing'
+        if not self.started_at and not self.finished_at:
+            return 'ongoing'
+        return 'ongoing'
 
     def change_status(self, status):
         """Change offer status.
