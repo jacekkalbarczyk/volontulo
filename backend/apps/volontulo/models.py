@@ -153,7 +153,8 @@ class Offer(models.Model):
     action_start_date = models.DateTimeField(blank=True, null=True)
     action_end_date = models.DateTimeField(blank=True, null=True)
     volunteers_limit = models.IntegerField(default=0, null=True, blank=True)
-    reserve_volunteers_limit = models.IntegerField(default=0, null=True, blank=True)
+    reserve_volunteers_limit = models.IntegerField(
+        default=0, null=True, blank=True)
     weight = models.IntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
