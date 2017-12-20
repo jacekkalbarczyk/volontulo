@@ -17,7 +17,7 @@
       "test": "test.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
-      "prefix": "app",
+      "prefix": "volontulo",
       "styles": [
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "assets/css/bootstrap-glyphicons.css",
@@ -57,6 +57,7 @@
   },
   "defaults": {
     "styleExt": "css",
-    "component": {}
+    "component": {},
+    "poll": 1000
   }
 }
