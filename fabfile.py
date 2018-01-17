@@ -8,8 +8,10 @@ particular script using Python 2.
 """
 
 import contextlib
+import os
 import random
 import string
+import sys
 
 from fabric.api import cd
 from fabric.api import env
@@ -18,11 +20,13 @@ from fabric.api import prefix
 from fabric.api import run
 from fabric.contrib import files
 
+
+NODE_VERSION = '9.3.0'
+
 env.user = 'root'
 if not env.hosts:
     env.hosts = ['dev.volontulo.pl']
 env.forward_agent = True
-
 
 env_vars = {
     'dev.volontulo.pl': {
@@ -56,7 +60,7 @@ def update():
 
     # Gulp frontend refresh:
     with contextlib.nested(
-        prefix('nvm use 7.9.0'),
+        prefix('nvm use {}'.format(NODE_VERSION)),
         cd('/var/www/volontulo/backend/apps/volontulo'),
     ):
         run('npm install .')
@@ -72,7 +76,7 @@ def update():
 
     # Angular assets refresh:
     with contextlib.nested(
-        prefix('nvm use 7.9.0'),
+        prefix('nvm use {}'.format(NODE_VERSION)),
         cd('/var/www/volontulo/frontend'),
     ):
         run('npm install .')
@@ -84,6 +88,14 @@ def update():
 
 def install():
     u"""Function defining all steps required to install application."""
+
+    # ensure that we have secrets configured:
+    sys.path.insert(0, os.path.dirname(__file__))
+    try:
+        from secrets import VOLONTULO_SENTRY_DSN
+    except ImportError:
+        print("Missing secrets")
+        raise
 
     # Sytem upgrade:
     run('apt-get update -y')
@@ -120,8 +132,8 @@ def install():
     run('echo \'[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"\' >> ~/.bash_profile')
     run('echo \'[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"\' >> ~/.bash_profile')
     run('source ~/.bash_profile')
-    run('nvm install 7.9')
-    with prefix('nvm use 7.9.0'):
+    run('nvm install {}'.format(NODE_VERSION))
+    with prefix('nvm use {}'.format(NODE_VERSION)):
         run('npm install -g @angular/cli --unsafe-perm')
 
     # Install virtualenv:
@@ -142,6 +154,10 @@ def install():
         run('mkdir media')
         run('chown www-data:www-data media')
 
+    # Export Sentry DSN key
+    run('echo "export VOLONTULO_SENTRY_DSN={}" >> ~/.bash_profile'.format(
+        VOLONTULO_SENTRY_DSN))
+
     # Install uwsgi
     run('pip3 install uwsgi')
     run('mkdir -p /etc/uwsgi/sites')
@@ -156,12 +172,14 @@ env = DJANGO_SETTINGS_MODULE=volontulo_org.settings.{}""".format(
     env_vars[env.host_string]['django_settings']))
     run("echo 'env = VOLONTULO_SECRET_KEY='$VOLONTULO_SECRET_KEY >> /etc/uwsgi/sites/volontulo.ini")
     run("echo 'env = VOLONTULO_DB_PASS='$VOLONTULO_DB_PASS >> /etc/uwsgi/sites/volontulo.ini")
+    run("echo 'env = VOLONTULO_SENTRY_DSN='$VOLONTULO_SENTRY_DSN >> /etc/uwsgi/sites/volontulo.ini")
     files.append('/etc/uwsgi/sites/volontulo.ini',
 """
 socket = /run/uwsgi/volontulo.sock
 chown-socket = www-data:www-data
 chmod-socket = 660
 vacuum = true
+enable-threads = true
 """)
     files.append('/etc/systemd/system/uwsgi.service',
 """[Unit]
@@ -245,7 +263,7 @@ server {{
     run('add-apt-repository -y ppa:certbot/certbot')
     run('apt-get update -y')
     run('apt-get install -y python-certbot-nginx ')
-    run('certbot --nginx -m hello@codeforpoznan.pl --agree-tos --no-eff-email -d {} --redirect'.format(env.host_string))
+    run('certbot --authenticator standalone --installer nginx -m hello@codeforpoznan.pl --agree-tos --no-eff-email -d {} --redirect --pre-hook "service nginx stop" --post-hook "service nginx start"'.format(env.host_string))
     run('(crontab -l 2>/dev/null; echo \'0 0 * * * certbot renew --post-hook "systemctl reload nginx"\') | crontab -')
 
     execute(update)
@@ -256,5 +274,5 @@ server {{
         cd('/var/www/volontulo/backend'),
     ):
         django_admin_pass = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(64))
-        run('echo "from django.contrib.auth import get_user_model; User = get_user_model(); u = User(username=\'admin\',, is_staff=True, is_superuser=True); u.set_password(\'{}\'); u.save()" | python manage.py shell'.format(django_admin_pass))
+        run('echo "from django.contrib.auth import get_user_model; User = get_user_model(); u = User(username=\'admin\', is_staff=True, is_superuser=True); u.set_password(\'{}\'); u.save()" | python manage.py shell'.format(django_admin_pass))
         print('Django Admin Password: {}'.format(django_admin_pass))
