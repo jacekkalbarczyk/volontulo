@@ -1,40 +1,28 @@
-import { Offer } from './offers.model';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+
 import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
 
 import { environment } from '../../environments/environment';
-
+import { loadDefaultImage } from './offer.utils';
+import { Offer } from './offers.model';
 
 
 @Injectable()
 export class OffersService {
   private url = `${environment.apiRoot}/offers/`;
-  constructor (private http: Http) { }
 
-  getOffers() {
-    return this.http.get(this.url, { withCredentials: true } )
-      .map((res: Response) => res.json())
-      .map(offers => {
-        for (const offer of offers) {
-          this.loadDefaultImage(offer);
-        }
-        return offers;
-      });
+  constructor (private http: HttpClient) { }
+
+  getOffers(): Observable<Offer[]> {
+    return this.http.get<Offer[]>(this.url)
+      .map(offers => offers.map(offer => loadDefaultImage(offer)));
   }
 
   getOffer(id: number): Observable<Offer> {
-    return this.http.get(`${this.url}${id}/`, { withCredentials: true })
-      .map((res: Response) => res.json())
-      .map(offer => this.loadDefaultImage(offer));
-  }
-
-  loadDefaultImage(offer: Offer): Offer {
-    if (offer.image === null) {
-        offer.image = 'assets/img/banner/volontulo_baner.png';
-    }
-    return offer;
+    return this.http.get<Offer>(`${this.url}${id}/`)
+      .map(offer => loadDefaultImage(offer));
   }
 
   getJoinViewUrl(offer: Offer): string {

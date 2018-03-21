@@ -2,7 +2,7 @@ import { Organization } from '../organization/organization.model';
 
 export class Offer {
     id: number;
-    image: string;
+    image: string | null | undefined;
     location: string;
     organization: Organization;
     slug: string;
@@ -15,4 +15,6 @@ export class Offer {
     requirements: string;
     benefits: string;
     description: string;
+    actionStatus: string;
+    offerStatus: string;
 }

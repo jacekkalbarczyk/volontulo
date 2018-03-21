@@ -19,8 +19,12 @@ docker-compose up
 and point your browser to [http://localhost:8000](http://localhost:8000) and [http://localhost:4200](http://localhost:4200)
 
 ## Initial admin credentials
- * **user**: admin@volontuloapp.org
- * **pass**: stx123
+We have 2 levels of admin users and 2 initial users - with and without Django Admin access:
+
+username               | password | Django Admin access
+---------------------- | -------- | -------------------
+hello@codeforpoznan.pl | cfp123   | yes
+wolontariat@wrk.org.pl | wrk123   | no
 
 ## Instances
 
@@ -42,3 +46,16 @@ Working agreement:
 ## Responsive design breakpoints
 
 Angular implementation use extensively Bootstrap 4 - we will comply with [standard Bootstrap 4 breakpoints described on its website](https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints).
+
+## Running tests locally
+
+In order to run tests locally, execute one of the following commands:
+
+```bash
+make test_all  # backend and frontend tests
+make test_backend  # backend tests + linter
+make test_frontend  # frontend tests
+```
+
+They will run docker image from the corresponding service.
+It will run in one-off mode but failed tests will leave a container behind - remember to clean it from time to time.

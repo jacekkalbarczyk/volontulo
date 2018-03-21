@@ -4,6 +4,7 @@
 .. module:: organizations
 """
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -19,19 +20,6 @@ from apps.volontulo.models import Offer
 from apps.volontulo.models import Organization
 from apps.volontulo.models import UserProfile
 from apps.volontulo.utils import correct_slug
-
-
-def organizations_list(request):
-    """View responsible for listing all organizations.
-
-    :param request: WSGIRequest instance
-    """
-    organizations = Organization.objects.all()
-    return render(
-        request,
-        "organizations/list.html",
-        {'organizations': organizations},
-    )
 
 
 class OrganizationsCreate(View):
@@ -112,7 +100,7 @@ def organization_form(request, slug, id_):  # pylint: disable=unused-argument
             request.user.is_authenticated() and
             UserProfile.objects.get(user=request.user).organizations
     ):
-        return redirect('homepage')
+        return redirect(settings.ANGULAR_ROOT)
 
     if request.method == 'POST':
         if (

@@ -5,14 +5,19 @@
 """
 
 import datetime
+import os
 
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 import factory
+from factory.django import ImageField
 from factory.fuzzy import FuzzyChoice
+import requests
 
-
-from apps.volontulo.models import Organization, UserProfile, Offer
+from apps.volontulo.models import Offer
+from apps.volontulo.models import OfferImage
+from apps.volontulo.models import Organization
+from apps.volontulo.models import UserProfile
 
 
 User = get_user_model()
@@ -27,7 +32,7 @@ class UserProfileFactory(factory.DjangoModelFactory):
     user = factory.SubFactory(
         "apps.volontulo.factories.UserFactory",
         userprofile=None
-        )
+    )
 
     @factory.post_generation
     def organizations(self, create, extracted):
@@ -38,7 +43,6 @@ class UserProfileFactory(factory.DjangoModelFactory):
             for org in extracted:
                 self.organizations.add(org)
 
-    is_administrator = factory.fuzzy.FuzzyChoice(choices=[True, False])
     phone_no = factory.Faker("phone_number", locale="pl_PL")
 
 
@@ -54,7 +58,7 @@ class UserFactory(factory.DjangoModelFactory):
     username = factory.LazyAttribute(lambda obj: obj.email)
 
     is_active = True
-    password = "password123"
+    password = "pass123"
     userprofile = factory.RelatedFactory(UserProfileFactory, "user")
 
     @classmethod
@@ -83,7 +87,7 @@ class OrganizationFactory(factory.DjangoModelFactory):
             "neutrum": [
                 "Krajowe", "Wojewódzkie", "Powiatowe", "Regionalne",
                 "Wielkopolskie", "Osiedlowe", "Stołeczne"]
-            }
+        }
         noun_list = {
             "Fundacja": "feminine",
             "Rada": "feminine",
@@ -95,7 +99,7 @@ class OrganizationFactory(factory.DjangoModelFactory):
             "Ogród": "masculine",
             "Koło": "neutrum",
             "Obwód": "masculine"
-            }
+        }
         predicate2_dict = {
             "masculine": [
                 "Organizacyjny", "Rejestrowy", "Egzekutywny", "Wspierający",
@@ -106,12 +110,12 @@ class OrganizationFactory(factory.DjangoModelFactory):
             "neutrum": [
                 "Organizacyjne", "Rejestrowe", "Egzekutywne", "Wspierające",
                 "Transakcyjne", "Związkowe", "Zbiorcze"]
-            }
+        }
 
         propername_list = [
             "Wspiera się", "Totuus", "Zawsze Razem", "W Kupie Siła",
             "Al Capone", "UKF", "Smak Miesiąca"
-            ]
+        ]
 
         subject = (FuzzyChoice(noun_list.keys())).fuzz()
         predicate1 = (FuzzyChoice(predicate1_dict[noun_list[subject]])).fuzz()
@@ -131,6 +135,37 @@ class OrganizationFactory(factory.DjangoModelFactory):
     name = factory.fuzzy.FuzzyAttribute(_organization_name)
     address = factory.Faker("address", locale="pl_PL")
     description = factory.Faker("paragraph")
+
+
+def placeimg_com_download(width, height, category):
+    """"placeimg.com downloader generator.
+
+    You can choose width, height and category and it will return argumentless
+    callable that will donwload such images and return file-like object.
+    """
+
+    def wrapped_func():
+        """Actual callable responsible for downloading images."""
+        return requests.get('https://placeimg.com/{}/{}/{}'.format(
+            width,
+            height,
+            category,
+        ), stream=True).raw
+
+    return wrapped_func
+
+
+class OfferImageFactory(factory.DjangoModelFactory):
+    """Factory for OfferImage."""
+
+    class Meta:  # pylint: disable=C0111
+        model = OfferImage
+
+    is_main = True
+    path = ImageField(from_path=os.path.join(
+        os.path.dirname(__file__),
+        'frontend/img/volontulo_baner.png'
+    ))
 
 
 class OfferFactory(factory.DjangoModelFactory):
@@ -168,21 +203,21 @@ class OfferFactory(factory.DjangoModelFactory):
     time_period = factory.Faker("text", max_nb_chars=150)
     status_old = factory.fuzzy.FuzzyChoice(
         choices=("NEW", "ACTIVE", "SUSPENDED")
-        )
+    )
     offer_status = factory.fuzzy.FuzzyChoice(
         choices=("unpublished", "published", "rejected")
-        )
+    )
     recruitment_status = factory.fuzzy.FuzzyChoice(
         choices=("open", "supplemental", "closed")
-        )
+    )
     action_status = factory.fuzzy.FuzzyChoice(
         choices=("future", "ongoing", "finished")
-        )
+    )
     votes = factory.fuzzy.FuzzyChoice(choices=(True, False))
     recruitment_start_date = factory.fuzzy.FuzzyDateTime(
         _start_date,
         _end_date
-        )
+    )
     recruitment_end_date = factory.fuzzy.FuzzyDateTime(
         _start_date,
         _end_date)
@@ -190,18 +225,19 @@ class OfferFactory(factory.DjangoModelFactory):
     reserve_recruitment_start_date = factory.fuzzy.FuzzyDateTime(
         _start_date,
         _end_date
-        )
+    )
     reserve_recruitment_end_date = factory.fuzzy.FuzzyDateTime(
         _start_date,
         _end_date
-        )
+    )
     action_ongoing = factory.fuzzy.FuzzyChoice(choices=(True, False))
     constant_coop = factory.fuzzy.FuzzyChoice(choices=(True, False))
     action_start_date = factory.fuzzy.FuzzyDateTime(
         _start_date,
         _end_date
-        )
+    )
     action_end_date = factory.fuzzy.FuzzyDateTime(_start_date, _end_date)
     volunteers_limit = factory.fuzzy.FuzzyInteger(0, 1000)
     reserve_volunteers_limit = factory.fuzzy.FuzzyInteger(0, 1000)
     weight = factory.fuzzy.FuzzyInteger(0, 1000)
+    image = factory.RelatedFactory(OfferImageFactory, "offer")

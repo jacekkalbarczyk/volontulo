@@ -1,14 +1,17 @@
+# -*- coding: utf-8 -*-
 
 import random
 
-from django.contrib.auth.models import User
-from django.core.management.base import BaseCommand, CommandError
-from django.db import models
+from django.core.management.base import BaseCommand
+from factory.django import ImageField
+from tqdm import tqdm
 
-from apps.volontulo.factories import (
-    UserProfileFactory, UserFactory, OrganizationFactory, OfferFactory
-    )
-from apps.volontulo.models import Organization, Offer, UserProfile
+from apps.volontulo.factories import OfferFactory
+from apps.volontulo.factories import OrganizationFactory
+from apps.volontulo.factories import placeimg_com_download
+from apps.volontulo.factories import UserProfileFactory
+from apps.volontulo.models import Offer
+from apps.volontulo.models import Organization
 
 
 class Command(BaseCommand):
@@ -16,56 +19,34 @@ class Command(BaseCommand):
 
     help = "Populates database with fake items."
 
-    def create_list_of_objects(self, type_of_objects, how_many_in_list):
-        # creates set of objects (ie. User, Organization, Offer)
-        # in order to join them to m2m relation
-        if type_of_objects == 'Organization':
-            return random.sample(
-                list(Organization.objects.all()),
-                how_many_in_list
-                )
-        elif type_of_objects == 'User':
-            return random.sample(
-                list(User.objects.all()),
-                how_many_in_list
-                )
-        elif type_of_objects == 'Offer':
-            return random.sample(
-                list(Offer.objects.all()),
-                how_many_in_list
-                )
-        else:
-            raise ValueError(
-                '{} is not a propper value'.format(type_of_objects)
-                )
-            return
-
     def handle(self, *args, **options):
         """Populate database with fake objects."""
 
-        # create 5 organizations
-        for organization in range(0, 5):
-            OrganizationFactory.create()
-
-        # create admin-user
-        UserProfileFactory.create(is_administrator=True)
-
-        # create 15 volunteers
-        for volunteer in range(0, 14):
+        self.stdout.write(self.style.SUCCESS('Creating 15 organizations'))
+        for _ in tqdm(range(15)):
+            organization = OrganizationFactory.create()
             UserProfileFactory.create(
-                organizations=self.create_list_of_objects('Organization', 3),
-                is_administrator=False
-                )
+                organizations=(organization,),
+            )
 
-        # create 50 offers
-        for offer in range(0, 50):
+        self.stdout.write(self.style.SUCCESS('Creating 50 offers'))
+        for _ in tqdm(range(50)):
             OfferFactory.create(
-                organization=self.create_list_of_objects(
-                    'Organization', 1
-                    )[0],
-                volunteers=self.create_list_of_objects('User', 3)
+                organization=random.choice(Organization.objects.all()),
+                image__path=ImageField(
+                    from_func=placeimg_com_download(1000, 400, 'any')
                 )
+            )
 
-        self.stdout.write(self.style.SUCCESS(
-            'Database successfully populated'
-            ))
+        self.stdout.write(self.style.SUCCESS('Creating 150 volunteers'))
+        for _ in tqdm(range(150)):
+            userprofile = UserProfileFactory.create()
+            no_of_offers = random.randrange(10)
+            for offer in random.sample(
+                list(Offer.objects.all()), no_of_offers
+            ):
+                offer.volunteers.add(userprofile.user)
+
+        self.stdout.write(
+            self.style.SUCCESS('Database successfully populated')
+        )

@@ -1,42 +1,70 @@
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
 
 import { Organization, OrganizationContactPayload } from './organization.model';
+import { ContactStatus } from './organization.interfaces';
+import { Offer } from '../homepage-offer/offers.model';
+import { loadDefaultImage } from '../homepage-offer/offer.utils';
 import { environment } from '../../environments/environment';
 
 @Injectable()
 export class OrganizationService {
-  url = `${environment.apiRoot}/organizations`;
-  requestOptions = { withCredentials: true };
-  private _organization$ = new BehaviorSubject<Organization>(null);
-  public organization$ = this._organization$.asObservable();
+  private url = `${environment.apiRoot}/organizations/`;
 
-  constructor(private http: Http) {
+  private contactStatusEvent = new Subject<ContactStatus>();
+  private organizationEvent = new BehaviorSubject<Organization | null>(null);
+  private organizationsEvent = new Subject<Organization[]>();
+  private offersEvent = new Subject<Offer[]>();
+
+  public contactStatus$: Observable<ContactStatus> = this.contactStatusEvent.asObservable();
+  public organization$: Observable<Organization | null> = this.organizationEvent.asObservable();
+  public organizations$: Observable<Organization[]> = this.organizationsEvent.asObservable();
+  public offers$: Observable<Offer[]> = this.offersEvent.asObservable();
+
+  constructor(private http: HttpClient) { }
+
+  getOrganization(id: number) {
+    return this.http.get<Organization>(`${this.url}${id}/`)
+      .subscribe(organization => this.organizationEvent.next(organization));
   }
 
-  getOrganization(id: number): Observable<Organization> {
-    return this.http.get(`${this.url}/${id}/`, this.requestOptions).map(response => {
-      this._organization$.next(response.json());
-      return response.json();
-    });
-  }
-
-  sendContactForm(organization: Organization, contactData: OrganizationContactPayload): Observable<string> {
-    return this.http.post(
-      `${environment.apiRoot}/organizations/${organization.id}/contact/`,
-      contactData)
-      .map(response => {
-        if (response.status === 201) {
-          return 'success';
-        }
-      }).catch(err => Observable.of('error'));
+  sendContactForm(organization: Organization, contactData: OrganizationContactPayload) {
+    this.http.post(
+      `${this.url}${organization.id}/contact/`,
+      contactData,
+      { observe: 'response' })
+      .subscribe(
+        (response: HttpResponse<any>) => {
+          if (response.status !== 201) {
+            this.contactStatusEvent.next({ data: contactData, status: 'error' });
+          } else {
+            this.contactStatusEvent.next({ data: contactData, status: 'success' });
+          }
+        },
+        err => this.contactStatusEvent.next({ data: contactData, status: 'error' }),
+      );
   }
 
   getOrganizationViewUrl(organization: Organization): string {
     return `${environment.djangoRoot}/organizations/${organization.slug}/${organization.id}`;
+  }
+
+  getOrganizationCreateViewUrl(): string {
+    return `${environment.djangoRoot}/organizations/create`;
+  }
+
+  getOrganizations() {
+    return this.http.get<Organization[]>(this.url)
+      .subscribe(organizations => this.organizationsEvent.next(organizations));
+  }
+
+  getOffersForOrganization(id: number) {
+    return this.http.get<Offer[]>(`${this.url}${id}/offers/`)
+      .map(offers => offers.map(offer => loadDefaultImage(offer)))
+      .subscribe(offers => this.offersEvent.next(offers));
   }
 }

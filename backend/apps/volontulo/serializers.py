@@ -46,10 +46,12 @@ class OfferSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Offer
         fields = (
+            'action_status',
             'finished_at',
             'id',
             'image',
             'location',
+            'offer_status',
             'organization',
             'slug',
             'started_at',
@@ -106,7 +108,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 # pylint: disable=abstract-method
-class OrganizationContact(serializers.Serializer):
+class OrganizationContactSerializer(serializers.Serializer):
     """Serializer for contact message"""
     name = CharField(required=True, min_length=2, max_length=150,
                      trim_whitespace=True)
@@ -115,3 +117,21 @@ class OrganizationContact(serializers.Serializer):
                          trim_whitespace=True)
     message = CharField(required=True, min_length=2, max_length=500,
                         trim_whitespace=True)
+
+
+# pylint: disable=abstract-method
+class UsernameSerializer(serializers.Serializer):
+    """Serializer for password reset"""
+    username = EmailField(required=True)
+
+
+# pylint: disable=abstract-method
+class PasswordSerializer(serializers.Serializer):
+    """Serializer for password reset"""
+    password = CharField(required=True, min_length=2, max_length=150)
+
+
+class MessageSerializer(serializers.Serializer):
+    """Serializer for messages from Django contrib."""
+    message = CharField(required=True)
+    type = CharField(required=True, source='level_tag')
