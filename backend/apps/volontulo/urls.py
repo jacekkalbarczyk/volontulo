@@ -51,7 +51,16 @@ urlpatterns = [
         name='password_reset_confirm'
     ),
     url(r'^api/messages/$', api_views.messages_view, name='messages'),
-
+        r'^api/register',
+        api_views.register_view,
+        name='api_register'
+    ),
+    url(
+        r'^api/activate',
+        api_views.activate,
+        name='api_activate'
+    ),
+    
     # login and loggged user space:
     url(r'^o/logout$', auth_views.logout, name='logout'),
     url(r'^o/register$', auth_views.Register.as_view(), name='register'),

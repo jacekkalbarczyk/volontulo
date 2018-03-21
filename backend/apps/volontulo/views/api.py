@@ -3,6 +3,8 @@
 """
 .. module:: api
 """
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
@@ -15,6 +17,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.utils import IntegrityError
+from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.decorators import api_view, detail_route
 from rest_framework.decorators import authentication_classes
@@ -31,6 +35,7 @@ from apps.volontulo.lib.email import send_mail
 from apps.volontulo.models import Organization
 from apps.volontulo.serializers import \
     OrganizationContactSerializer, UsernameSerializer, PasswordSerializer
+from apps.volontulo.models import UserProfile
 from apps.volontulo.views import logged_as_admin
 
 
@@ -62,6 +67,62 @@ def login_view(request):
         }).data,
         status=status.HTTP_400_BAD_REQUEST,
     )
+
+@api_view(['POST'])
+@authentication_classes((CsrfExemptSessionAuthentication,))
+@permission_classes((AllowAny,))
+def register_view(request):
+    """REST API register view."""
+    if not request.user.is_authenticated():
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        try:
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                password=password,
+            )
+            user.is_active = False
+            user.save()
+            profile = UserProfile(user=user)
+            ctx = {'token': profile.uuid, 'angular_root' : settings.ANGULAR_ROOT}
+            profile.save()
+            # sending email to user:
+            send_mail(request, 'registration', [user.email], context=ctx)            
+        except IntegrityError:
+            #return Response(
+            #    status=status.HTTP
+            #)
+            pass
+                   
+        return Response(
+            status=status.HTTP_201_CREATED,
+        )
+
+    return Response(
+        serializers.UserSerializer(request.user, context={
+            'request': request
+        }).data,
+        status=status.HTTP_400_BAD_REQUEST,
+    )
+
+@api_view(['POST'])
+@authentication_classes((CsrfExemptSessionAuthentication,))
+@permission_classes((AllowAny,))
+def activate(request):
+    """View responsible for activating user account."""
+    try:
+        profile = UserProfile.objects.get(uuid=request.data.get('uuid'))
+        profile.user.is_active = True
+        profile.user.save()
+        return Response(
+            status=status.HTTP_201_CREATED,
+        )
+    except UserProfile.DoesNotExist:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 @api_view(['POST'])

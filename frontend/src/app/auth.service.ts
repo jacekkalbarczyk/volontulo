@@ -17,11 +17,16 @@ export class AuthService {
   private loginUrl = `${environment.apiRoot}/login`;
   private logoutUrl = `${environment.apiRoot}/logout`;
   private resetPasswordUrl = `${environment.apiRoot}/password-reset`;
-
   private changeUserEvent = new BehaviorSubject<User | null>(null);
   private loginEvent = new Subject<SuccessOrFailureAction>();
   private resetPasswordEvent = new Subject<SuccessOrFailureAction>();
   private confirmResetPasswordEvent = new Subject<SuccessOrFailureAction>();
+  private _loginUrl = `${environment.apiRoot}/login`;
+  private _logoutUrl = `${environment.apiRoot}/logout`;
+  private _currentUserUrl = `${environment.apiRoot}/current-user`;
+  private _currentUser: User;
+  private _registerUrl = `${environment.apiRoot}/register`;
+  private _accountActivationUrl = `${environment.apiRoot}/activate`;
 
   public user$: Observable<User | null> = this.changeUserEvent.asObservable();
   public login$: Observable<SuccessOrFailureAction> = this.loginEvent.asObservable();
@@ -94,6 +99,26 @@ export class AuthService {
         err => {
           this.confirmResetPasswordEvent.next({ success: false, message: err });
         });
+  }
+
+  register(email: string, password: string): Observable<any> {
+    return this.http.post(
+      this._registerUrl,
+      { password, email },
+      { withCredentials: true })
+      .map(rsp => {
+        return rsp;
+      });
+  }
+
+  account_activation(uuid: string): Observable<any> {
+    return this.http.post(
+      this._accountActivationUrl,
+      { uuid },
+      { withCredentials: true })
+      .map(rsp => {
+        return rsp;
+      });
   }
 
   logout() {

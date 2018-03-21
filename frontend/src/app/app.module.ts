@@ -40,6 +40,8 @@ import { FaqVolunteersComponent } from './static/faq-volunteers.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { PasswordResetConfirmComponent } from './password-reset/password-reset-confirm.component';
 import { OrganizationOffersListComponent } from './organization/organization-offers-list/organization-offers-list.component';
+import { RegisterComponent } from './register/register.component';
+import { AccountActivationComponent } from './account-activation/account-activation.component';
 
 Raven.config(environment.sentryDSN).install();
 
@@ -77,6 +79,14 @@ const appRoutes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
+  {
+    path: 'account-activation',
+    component: AccountActivationComponent
   },
   {
     path: 'regulations',
@@ -133,6 +143,8 @@ registerLocaleData(localePl);
     PasswordResetConfirmComponent,
     MessagesComponent,
     OrganizationOffersListComponent,
+    RegisterComponent,
+    AccountActivationComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'volontulo' }),

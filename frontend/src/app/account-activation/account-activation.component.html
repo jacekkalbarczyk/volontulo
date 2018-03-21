@@ -1,0 +1,4 @@
+<div *ngIf="activationSuccessful; else activationError" class="alert alert-success" role="alert">Pomyślnie aktywowano użytkownika</div>
+<ng-template #activationError>
+  <div class="alert alert-danger" role="alert">Aktywacja nie powiodła się</div>
+</ng-template>
