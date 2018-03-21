@@ -7,7 +7,7 @@
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link" href="{{ djangoRoot }}">Strona główna</a>
-            <a class="nav-link" href="{{ djangoRoot }}/register">Załóż konto</a>
+            <a class="nav-link" [routerLink]="['/register']">Załóż konto</a>
             <a class="nav-link" href="{{ djangoRoot }}/contact">Kontakt z administratorem</a>
             <a class="nav-link" [routerLink]="['/about-us']">O nas</a>
             <a class="nav-link" [routerLink]="['/regulations']">Regulamin</a>
@@ -18,7 +18,7 @@
         <h3 class="nav-title">Strefa organizacji i instytucji</h3>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="{{ djangoRoot }}/register">Załóż konto</a>
+            <a class="nav-link" [routerLink]="['/register']">Załóż konto</a>
             <a class="nav-link" href="{{ djangoRoot }}/offers/create">Dodaj nową ofertę</a>
             <a class="nav-link" href="{{ djangoRoot }}/organizations">Lista organizacji i instytucji</a>
             <a class="nav-link" [routerLink]="['/faq-organizations']">FAQ dla organizacji i instytucji</a>
@@ -30,7 +30,7 @@
         <h3 class="nav-title">Strefa wolontariusza</h3>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="{{ djangoRoot }}/register">Załóż konto</a>
+            <a class="nav-link" [routerLink]="['/register']">Załóż konto</a>
             <a class="nav-link" href="{{ djangoRoot }}/offers">Lista aktualnych ofert</a>
             <a class="nav-link" href="{{ djangoRoot }}/offers/archived">Archiwum ofert</a>
             <a class="nav-link" href="{{ djangoRoot }}/organizations">Lista organizacji i instytucji</a>

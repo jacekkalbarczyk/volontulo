@@ -11,7 +11,7 @@
         <b>Dziękujemy za rejestrację.</b><br>
         <br>
         Zweryfikuj swoje konto na Volontulo wchodząc w poniższy link:<br>
-        <a href="{{ protocol }}://{{ domain }}{% url 'activate' uuid %}">Aktywuj</a>
+        <a href="{{ angular_root }}/account-activation?activation_token={{ token }}">Aktywuj</a>
     </center>
 {% endblock %}
 

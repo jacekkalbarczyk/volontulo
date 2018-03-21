@@ -15,6 +15,8 @@ export class AuthService {
   private _currentUser: User;
   public changeUserEvent: BehaviorSubject<User | null>;
   public resetPasswordUrl = `${environment.djangoRoot}/password-reset`;
+  private _registerUrl = `${environment.apiRoot}/register`;
+  private _accountActivationUrl = `${environment.apiRoot}/activate`;
 
   public user$: Observable<User | null>;
 
@@ -47,6 +49,28 @@ export class AuthService {
         }
       });
   }
+
+  register(email: string, password: string): Observable<any> {
+    return this.http.post(
+      this._registerUrl,
+      { password, email },
+      { withCredentials: true })
+      .map(rsp => {
+        return rsp;
+      });
+  }
+
+
+  account_activation(uuid: string): Observable<any> {
+    return this.http.post(
+      this._accountActivationUrl,
+      { uuid },
+      { withCredentials: true })
+      .map(rsp => {
+        return rsp;
+      });
+  }
+
 
   currentUser(): User {
     return this._currentUser;

@@ -31,6 +31,7 @@ import { FaqOrganizationsComponent } from './static/faq-organizations.component'
 import { OfficeComponent } from './static/office/office.component';
 import { FaqVolunteersComponent } from './static/faq-volunteers.component';
 import { RegisterComponent } from './register/register.component';
+import { AccountActivationComponent } from './account-activation/account-activation.component';
 
 Raven.config(environment.sentryDSN).install();
 
@@ -74,6 +75,10 @@ const appRoutes: Routes = [
     component: RegisterComponent,
   },
   {
+    path: 'account-activation',
+    component: AccountActivationComponent
+  },
+  {
     path: 'regulations',
     component: RegulationsComponent
   },
@@ -108,6 +113,7 @@ const appRoutes: Routes = [
     OfficeComponent,
     FaqVolunteersComponent,
     RegisterComponent,
+    AccountActivationComponent,
   ],
   imports: [
     BrowserModule,

@@ -51,7 +51,7 @@
         {% if user.is_anonymous and not user.is_authenticated %}
         <div class="media">
             <div class="media-left media-middle">
-                <a class="btn btn-primary" href="{% url 'register' %}">Załóż konto</a>
+                <a class="btn btn-primary" href="{{ ANGULAR_ROOT }}/register">Załóż konto</a>
             </div>
             <div class="media-left media-middle">
                 <span class="control-label">lub</span>

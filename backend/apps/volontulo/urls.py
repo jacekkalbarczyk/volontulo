@@ -44,7 +44,16 @@ urlpatterns = [
         api_views.current_user,
         name='current_user'
     ),
-
+    url(
+        r'^api/register',
+        api_views.register_view,
+        name='api_register'
+    ),
+    url(
+        r'^api/activate',
+        api_views.activate,
+        name='api_activate'
+    ),
     # homepage:
     url(r'^o$', views.homepage, name='homepage'),
 
