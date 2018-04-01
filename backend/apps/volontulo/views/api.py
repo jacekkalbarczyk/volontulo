@@ -88,7 +88,8 @@ def register_view(request):
 
             user.save()
             profile = UserProfile(user=user)
-            ctx = {'token': profile.uuid, 'angular_root': settings.ANGULAR_ROOT}
+            ctx = {'token': profile.uuid, 'angular_root':
+                   settings.ANGULAR_ROOT}
             profile.save()
             send_mail(request, 'registration', [user.email], context=ctx)
         except IntegrityError:
