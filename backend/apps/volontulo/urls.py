@@ -65,7 +65,7 @@ urlpatterns = [
         api_views.activate,
         name='api_activate'
     ),
-    
+
     # login and loggged user space:
     url(r'^o/logout$', auth_views.logout, name='logout'),
     url(r'^o/register$', auth_views.Register.as_view(), name='register'),

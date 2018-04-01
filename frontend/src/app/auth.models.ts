@@ -6,7 +6,6 @@ export interface LoginRequestModel {
 export interface RegisterRequestModel {
     email: string;
     password: string;
-    terms_acceptance: boolean;
 }
 
 export interface AccountActivationRequestModel {

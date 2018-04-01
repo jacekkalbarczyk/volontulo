@@ -14,12 +14,11 @@ export class RegisterComponent implements OnInit {
   registerModel: RegisterRequestModel = {
     email: '',
     password: '',
-    terms_acceptance: false,
   };
   ACCEPT_TERMS: string;
   registrationSuccessful: boolean = false;
   userIsAuthenticated: boolean = false;
-  
+
   constructor(private authService: AuthService,
   ) { this.ACCEPT_TERMS = "Wyrażam zgodę na przetwarzanie moich danych osobowych" }
 
@@ -35,9 +34,9 @@ export class RegisterComponent implements OnInit {
       },
       error => {
         if (error.status === 400)
-        this.userIsAuthenticated = true;        
-      } 
-    ); 
+          this.userIsAuthenticated = true;
+      }
+      );
   }
 
   ngOnInit() {

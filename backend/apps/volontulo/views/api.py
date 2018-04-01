@@ -104,6 +104,7 @@ def register_view(request):
         status=status.HTTP_400_BAD_REQUEST,
     )
 
+
 @api_view(['POST'])
 @authentication_classes((CsrfExemptSessionAuthentication,))
 @permission_classes((AllowAny,))
