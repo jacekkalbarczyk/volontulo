@@ -68,6 +68,7 @@ def login_view(request):
         status=status.HTTP_400_BAD_REQUEST,
     )
 
+
 @api_view(['POST'])
 @authentication_classes((CsrfExemptSessionAuthentication,))
 @permission_classes((AllowAny,))
@@ -83,19 +84,15 @@ def register_view(request):
                 email=email,
                 password=password,
             )
-            user.is_active = False
+
             user.save()
             profile = UserProfile(user=user)
-            ctx = {'token': profile.uuid, 'angular_root' : settings.ANGULAR_ROOT}
+            ctx = {'token': profile.uuid, 'angular_root': settings.ANGULAR_ROOT}
             profile.save()
-            # sending email to user:
-            send_mail(request, 'registration', [user.email], context=ctx)            
+            send_mail(request, 'registration', [user.email], context=ctx)
         except IntegrityError:
-            #return Response(
-            #    status=status.HTTP
-            #)
             pass
-                   
+
         return Response(
             status=status.HTTP_201_CREATED,
         )
@@ -225,7 +222,7 @@ class OfferViewSet(viewsets.ModelViewSet):
         'requirements',
         'started_at',
         'recruitment_end_date'
-        )
+    )
 
     def get_queryset(self):
         """Queryset depends on user role."""

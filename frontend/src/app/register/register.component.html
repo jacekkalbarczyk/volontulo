@@ -45,5 +45,6 @@
         </div>
     </div>
     <div *ngIf="registrationSuccessful" class="alert alert-info" role="alert">Jeśli podany email jest prawidłowy, powinieneś otrzymać wiadomość z linkiem potwierdzającym.</div>
+    <div *ngIf="userIsAuthenticated" class="alert alert-info" role="alert">Wyloguj się, jeśli chcesz zarejestrować użytkownika.</div>
     <button type="submit" name="submit" class="btn btn-primary" [disabled]="password.errors || email.errors || checkboxTA.errors">Zarejestruj się</button>
 </form>

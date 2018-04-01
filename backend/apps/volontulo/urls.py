@@ -50,7 +50,12 @@ urlpatterns = [
         api_views.password_reset_confirm,
         name='password_reset_confirm'
     ),
-    url(r'^api/messages/$', api_views.messages_view, name='messages'),
+    url(
+        r'^api/messages/$',
+        api_views.messages_view,
+        name='messages'
+    ),
+    url(
         r'^api/register',
         api_views.register_view,
         name='api_register'

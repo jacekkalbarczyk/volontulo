@@ -20,13 +20,12 @@ export class AccountActivationComponent implements OnInit {
 
   activate(): void {
     this.authService.account_activation(this.accountActivationRequestModel.uuid)
-      .map(rsp => {
+      .subscribe(rsp => {
         if (rsp.status === 201)
           this.activationSuccessful = true;
 
         return Observable.of(null);
-      })
-      .subscribe();
+      });
   }
 
   ngOnInit() {

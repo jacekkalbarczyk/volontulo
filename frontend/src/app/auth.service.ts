@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '../environments/environment';
 import { User } from './user.d';
 import { SuccessOrFailureAction } from './models';
+import { error } from 'selenium-webdriver';
 
 
 @Injectable()
@@ -101,24 +102,18 @@ export class AuthService {
         });
   }
 
-  register(email: string, password: string): Observable<any> {
+  register(email: string, password: string) {
     return this.http.post(
       this._registerUrl,
       { password, email },
-      { withCredentials: true })
-      .map(rsp => {
-        return rsp;
-      });
+      { observe: 'response' })
   }
 
-  account_activation(uuid: string): Observable<any> {
+  account_activation(uuid: string) {
     return this.http.post(
       this._accountActivationUrl,
       { uuid },
-      { withCredentials: true })
-      .map(rsp => {
-        return rsp;
-      });
+      { observe: 'response' });
   }
 
   logout() {
