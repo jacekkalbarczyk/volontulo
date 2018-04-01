@@ -16,25 +16,30 @@ export class RegisterComponent implements OnInit {
     password: '',
   };
   ACCEPT_TERMS: string;
-  registrationSuccessful: boolean = false;
-  userIsAuthenticated: boolean = false;
+  registrationSuccessful: boolean;
+  userIsAuthenticated: boolean;
 
   constructor(private authService: AuthService,
-  ) { this.ACCEPT_TERMS = "Wyrażam zgodę na przetwarzanie moich danych osobowych" }
+  ) {
+    this.ACCEPT_TERMS = 'Wyrażam zgodę na przetwarzanie moich danych osobowych';
+    this.registrationSuccessful = false;
+    this.userIsAuthenticated = false;
+  }
 
   register(): void {
     this.registrationSuccessful = false;
     this.userIsAuthenticated = false;
     this.authService.register(this.registerModel.email, this.registerModel.password)
       .subscribe(rsp => {
-        if (rsp.status === 201)
+        if (rsp.status === 201) {
           this.registrationSuccessful = true;
-
+        }
         return Observable.of(null);
       },
-      error => {
-        if (error.status === 400)
+      err => {
+        if (err.status === 400) {
           this.userIsAuthenticated = true;
+        }
       }
       );
   }

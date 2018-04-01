@@ -13,17 +13,19 @@ export class AccountActivationComponent implements OnInit {
   accountActivationRequestModel: AccountActivationRequestModel = {
     uuid: '',
   };
-  activationSuccessful: boolean = false;
+  activationSuccessful: boolean;
 
   constructor(private authService: AuthService, private activatedRoute: ActivatedRoute
-  ) { }
+  ) {
+    this.activationSuccessful = false;
+  }
 
   activate(): void {
     this.authService.account_activation(this.accountActivationRequestModel.uuid)
       .subscribe(rsp => {
-        if (rsp.status === 201)
+        if (rsp.status === 201) {
           this.activationSuccessful = true;
-
+        }
         return Observable.of(null);
       });
   }
