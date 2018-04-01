@@ -84,6 +84,7 @@ def register_view(request):
                 username=email,
                 email=email,
                 password=password,
+                is_active=False
             )
 
             user.save()
