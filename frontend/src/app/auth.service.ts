@@ -9,7 +9,6 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '../environments/environment';
 import { User } from './user.d';
 import { SuccessOrFailureAction } from './models';
-import { error } from 'selenium-webdriver';
 
 
 @Injectable()
@@ -18,17 +17,16 @@ export class AuthService {
   private loginUrl = `${environment.apiRoot}/login/`;
   private logoutUrl = `${environment.apiRoot}/logout/`;
   private resetPasswordUrl = `${environment.apiRoot}/password-reset/`;
+  private registerUrl = `${environment.apiRoot}/register/`;
+  private accountActivationUrl = `${environment.apiRoot}/activate/`;
 
   private changeUserEvent = new BehaviorSubject<User | null>(null);
   private loginEvent = new Subject<SuccessOrFailureAction>();
   private resetPasswordEvent = new Subject<SuccessOrFailureAction>();
   private confirmResetPasswordEvent = new Subject<SuccessOrFailureAction>();
-  private _loginUrl = `${environment.apiRoot}/login`;
   private _logoutUrl = `${environment.apiRoot}/logout`;
   private _currentUserUrl = `${environment.apiRoot}/current-user`;
   private _currentUser: User;
-  private _registerUrl = `${environment.apiRoot}/register`;
-  private _accountActivationUrl = `${environment.apiRoot}/activate`;
 
   public user$: Observable<User | null> = this.changeUserEvent.asObservable();
   public login$: Observable<SuccessOrFailureAction> = this.loginEvent.asObservable();
@@ -105,14 +103,14 @@ export class AuthService {
 
   register(email: string, password: string) {
     return this.http.post(
-      this._registerUrl,
+      this.registerUrl,
       { password, email },
       { observe: 'response' })
   }
 
-  account_activation(uuid: string) {
+  activateAccount(uuid: string) {
     return this.http.post(
-      this._accountActivationUrl,
+      this.accountActivationUrl,
       { uuid },
       { observe: 'response' });
   }

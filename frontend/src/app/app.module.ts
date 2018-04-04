@@ -85,7 +85,7 @@ const appRoutes: Routes = [
     component: RegisterComponent,
   },
   {
-    path: 'account-activation',
+    path: 'activate/:token',
     component: AccountActivationComponent
   },
   {

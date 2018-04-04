@@ -4,26 +4,22 @@ import { AuthService } from '../auth.service';
 import { Observable } from 'rxjs/Observable';
 import { RedirectComponent } from 'app/redirect.component';
 import { Params } from '@angular/router';
-import { error } from 'selenium-webdriver';
+
 @Component({
   selector: 'volontulo-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
   registerModel: RegisterRequestModel = {
     email: '',
     password: '',
   };
-  ACCEPT_TERMS: string;
-  registrationSuccessful: boolean;
-  userIsAuthenticated: boolean;
+  ACCEPT_TERMS = 'Wyrażam zgodę na przetwarzanie moich danych osobowych';
+  registrationSuccessful = false;
+  userIsAuthenticated = false;
 
   constructor(private authService: AuthService,
   ) {
-    this.ACCEPT_TERMS = 'Wyrażam zgodę na przetwarzanie moich danych osobowych';
-    this.registrationSuccessful = false;
-    this.userIsAuthenticated = false;
   }
 
   register(): void {

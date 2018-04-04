@@ -1,50 +1,50 @@
 <h2>Rejestracja w Volontulo</h2>
 <form method="post" role="form" (ngSubmit)=register()>
-    <div class="form-group">
-        <p>Email:</p>
-        <input type="email" [(ngModel)]="registerModel.email" name="email" class="form-control" required email="true" #email="ngModel"
-        />
+  <div class="form-group">
+    <p>Email:</p>
+    <input type="email" [(ngModel)]="registerModel.email" name="email" class="form-control" required email="true" #email="ngModel"
+    />
 
-        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+    <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
 
-            <div *ngIf="email.errors.required">
-                Email is required.
-            </div>
-            <div *ngIf="email.errors.email && !email.errors.required">
-                Invalid Email.
-            </div>
+      <div *ngIf="email.errors.required">
+        Email is required.
+      </div>
+      <div *ngIf="email.errors.email && !email.errors.required">
+        Invalid Email.
+      </div>
 
-        </div>
     </div>
-    <div class="form-group">
-        <p>Password:</p>
-        <input type="password" [(ngModel)]="registerModel.password" name="password" class="form-control" required #password="ngModel"
-        />
-        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
+  </div>
+  <div class="form-group">
+    <p>Password:</p>
+    <input type="password" [(ngModel)]="registerModel.password" name="password" class="form-control" required #password="ngModel"
+    />
+    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
 
-            <div *ngIf="password.errors.required">
-                Password is required.
-            </div>
+      <div *ngIf="password.errors.required">
+        Password is required.
+      </div>
 
-        </div>
     </div>
-    <div class="form-group">
-        <div class="checkbox">
-            <label for="checkboxTA" class="control-label">
-                <input type="checkbox" [(ngModel)]="registerModel.terms_acceptance" name="checkboxTA" value="accept" id="checkboxTA" class="form-control"
-                    required #checkboxTA="ngModel"> {{ ACCEPT_TERMS }}
-                <span class="required">*</span>
-            </label>
-        </div>
-        <div *ngIf="checkboxTA.invalid" class="alert alert-danger">
-
-            <div *ngIf="checkboxTA.errors.required">
-                Wymagana zgoda na przetwarzanie danych osobowych.
-            </div>
-
-        </div>
+  </div>
+  <div class="form-group">
+    <div class="checkbox">
+      <label for="checkboxTA" class="control-label">
+        <input type="checkbox" [(ngModel)]="registerModel.terms_acceptance" name="checkboxTA" value="accept" id="checkboxTA" class="form-control"
+          required #checkboxTA="ngModel"> {{ ACCEPT_TERMS }}
+        <span class="required">*</span>
+      </label>
     </div>
-    <div *ngIf="registrationSuccessful" class="alert alert-info" role="alert">Jeśli podany email jest prawidłowy, powinieneś otrzymać wiadomość z linkiem potwierdzającym.</div>
-    <div *ngIf="userIsAuthenticated" class="alert alert-info" role="alert">Wyloguj się, jeśli chcesz zarejestrować użytkownika.</div>
-    <button type="submit" name="submit" class="btn btn-primary" [disabled]="password.errors || email.errors || checkboxTA.errors">Zarejestruj się</button>
+    <div *ngIf="checkboxTA.invalid" class="alert alert-danger">
+
+      <div *ngIf="checkboxTA.errors.required">
+        Wymagana zgoda na przetwarzanie danych osobowych.
+      </div>
+
+    </div>
+  </div>
+  <div *ngIf="registrationSuccessful" class="alert alert-info" role="alert">Jeśli podany email jest prawidłowy, powinieneś otrzymać wiadomość z linkiem potwierdzającym.</div>
+  <div *ngIf="userIsAuthenticated" class="alert alert-info" role="alert">Wyloguj się, jeśli chcesz zarejestrować użytkownika.</div>
+  <button type="submit" name="submit" class="btn btn-primary" [disabled]="password.errors || email.errors || checkboxTA.errors">Zarejestruj się</button>
 </form>

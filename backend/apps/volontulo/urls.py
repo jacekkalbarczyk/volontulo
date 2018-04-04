@@ -56,24 +56,18 @@ urlpatterns = [
         name='messages'
     ),
     url(
-        r'^api/register',
+        r'^api/register/$',
         api_views.register_view,
-        name='api_register'
+        name='register'
     ),
     url(
-        r'^api/activate',
-        api_views.activate,
-        name='api_activate'
+        r'^api/activate/$',
+        api_views.activate_view,
+        name='activate'
     ),
 
     # login and loggged user space:
     url(r'^o/logout$', auth_views.logout, name='logout'),
-    url(r'^o/register$', auth_views.Register.as_view(), name='register'),
-    url(
-        r'^o/activate/(?P<uuid>[-0-9A-Za-z]+)$',
-        auth_views.activate,
-        name='activate'
-    ),
     url(r'^o/me$', views.logged_user_profile, name='logged_user_profile'),
     # me/edit
     # me/settings

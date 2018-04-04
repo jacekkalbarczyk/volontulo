@@ -8,6 +8,3 @@ export interface RegisterRequestModel {
     password: string;
 }
 
-export interface AccountActivationRequestModel {
-    uuid: string;
-}

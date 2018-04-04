@@ -4,7 +4,6 @@
 .. module:: api
 """
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
@@ -13,12 +12,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.messages import get_messages
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.utils import IntegrityError
 from rest_framework import status
 from rest_framework.decorators import api_view, detail_route
 from rest_framework.decorators import authentication_classes
@@ -33,9 +33,9 @@ from apps.volontulo import serializers
 from apps.volontulo.authentication import CsrfExemptSessionAuthentication
 from apps.volontulo.lib.email import send_mail
 from apps.volontulo.models import Organization
+from apps.volontulo.models import UserProfile
 from apps.volontulo.serializers import \
     OrganizationContactSerializer, UsernameSerializer, PasswordSerializer
-from apps.volontulo.models import UserProfile
 from apps.volontulo.views import logged_as_admin
 
 
@@ -74,55 +74,47 @@ def login_view(request):
 @permission_classes((AllowAny,))
 def register_view(request):
     """REST API register view."""
-    if not request.user.is_authenticated():
-        email = request.data.get('email')
-        password = request.data.get('password')
+    if request.user.is_authenticated():
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            user = User.objects.create_user(
-                username=email,
-                email=email,
-                password=password,
-                is_active=False
-            )
+    email = request.data.get('email')
+    password = request.data.get('password')
 
-            user.save()
-            profile = UserProfile(user=user)
-            ctx = {'token': profile.uuid, 'angular_root':
-                   settings.ANGULAR_ROOT}
-            profile.save()
-            send_mail(request, 'registration', [user.email], context=ctx)
-        except IntegrityError:
-            pass
-
-        return Response(
-            status=status.HTTP_201_CREATED,
-        )
-
-    return Response(
-        serializers.UserSerializer(request.user, context={
-            'request': request
-        }).data,
-        status=status.HTTP_400_BAD_REQUEST,
+    user = User.objects.create_user(
+        username=email,
+        email=email,
+        password=password,
+        is_active=False,
     )
+    try:
+        user.save()
+    except IntegrityError:
+        return Response(status=status.HTTP_201_CREATED)
+
+    profile = UserProfile(user=user)
+    ctx = {'token': profile.uuid}
+    profile.save()
+    send_mail(request, 'registration', [user.email], context=ctx)
+
+    return Response(status=status.HTTP_201_CREATED)
+
 
 
 @api_view(['POST'])
 @authentication_classes((CsrfExemptSessionAuthentication,))
 @permission_classes((AllowAny,))
-def activate(request):
+def activate_view(request):
     """View responsible for activating user account."""
     try:
         profile = UserProfile.objects.get(uuid=request.data.get('uuid'))
-        profile.user.is_active = True
-        profile.user.save()
-        return Response(
-            status=status.HTTP_201_CREATED,
-        )
-    except UserProfile.DoesNotExist:
-        return Response(
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    except (UserProfile.DoesNotExist, ValidationError):
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if profile.user.is_active:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    profile.user.is_active = True
+    profile.user.save()
+    return Response(status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
