@@ -60,11 +60,18 @@ urlpatterns = [
         api_views.register_view,
         name='register'
     ),
+    # url(
+    #     r'^api/activate/$',
+    #     api_views.activate_view,
+    #     name='activate'
+    # ),
+
     url(
-        r'^api/activate/$',
+        r'^api/activate/(?P<uuid>[-0-9A-Za-z]+)/$',
         api_views.activate_view,
         name='activate'
     ),
+
 
     # login and loggged user space:
     url(r'^o/logout$', auth_views.logout, name='logout'),

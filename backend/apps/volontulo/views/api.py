@@ -103,10 +103,10 @@ def register_view(request):
 @api_view(['POST'])
 @authentication_classes((CsrfExemptSessionAuthentication,))
 @permission_classes((AllowAny,))
-def activate_view(request):
+def activate_view(request, uuid):
     """View responsible for activating user account."""
     try:
-        profile = UserProfile.objects.get(uuid=request.data.get('uuid'))
+        profile = UserProfile.objects.get(uuid=uuid)
     except (UserProfile.DoesNotExist, ValidationError):
         return Response(status=status.HTTP_404_NOT_FOUND)
 

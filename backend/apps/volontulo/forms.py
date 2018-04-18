@@ -12,8 +12,6 @@ from apps.volontulo.models import OfferImage
 from apps.volontulo.models import UserGallery
 from apps.volontulo.utils import get_administrators_emails
 
-ACCEPT_TERMS = """Wyrażam zgodę na przetwarzanie moich danych osobowych"""
-
 
 class EditProfileForm(forms.Form):
 

@@ -18,13 +18,12 @@ export class AuthService {
   private logoutUrl = `${environment.apiRoot}/logout/`;
   private resetPasswordUrl = `${environment.apiRoot}/password-reset/`;
   private registerUrl = `${environment.apiRoot}/register/`;
-  private accountActivationUrl = `${environment.apiRoot}/activate/`;
+  private activationUrl = `${environment.apiRoot}/activate/`;
 
   private changeUserEvent = new BehaviorSubject<User | null>(null);
   private loginEvent = new Subject<SuccessOrFailureAction>();
   private resetPasswordEvent = new Subject<SuccessOrFailureAction>();
   private confirmResetPasswordEvent = new Subject<SuccessOrFailureAction>();
-  private _logoutUrl = `${environment.apiRoot}/logout`;
   private _currentUserUrl = `${environment.apiRoot}/current-user`;
   private _currentUser: User;
 
@@ -50,14 +49,14 @@ export class AuthService {
   login(username: string, password: string): void {
     this.http.post<User>(this.loginUrl, { username, password })
       .subscribe(
-      user => {
-        this.changeUserEvent.next(user);
-        this.loginEvent.next({ success: true });
-        this.router.navigate(['']);
-      },
-      err => {
-        this.loginEvent.next({ success: false, message: err });
-      }
+        user => {
+          this.changeUserEvent.next(user);
+          this.loginEvent.next({ success: true });
+          this.router.navigate(['']);
+        },
+        err => {
+          this.loginEvent.next({ success: false, message: err });
+        }
       );
   }
 
@@ -65,40 +64,40 @@ export class AuthService {
     this.http.post(
       this.resetPasswordUrl, { username }, { observe: 'response' })
       .subscribe(
-      response => {
-        if (response.status === 201) {
-          this.resetPasswordEvent.next({ success: true });
-        } else {
-          this.resetPasswordEvent.next(
-            {
-              success: false,
-              message: `Backend return http code other than 201: ${response.status}`
-            });
-        }
-      },
-      err => {
-        this.resetPasswordEvent.next({ success: false, message: err });
-      });
+        response => {
+          if (response.status === 201) {
+            this.resetPasswordEvent.next({ success: true });
+          } else {
+            this.resetPasswordEvent.next(
+              {
+                success: false,
+                message: `Backend return http code other than 201: ${response.status}`
+              });
+          }
+        },
+        err => {
+          this.resetPasswordEvent.next({ success: false, message: err });
+        });
   }
 
   confirmResetPassword(password: string, uidb64: string, token: string) {
     this.http.post(
       `${this.resetPasswordUrl}/${uidb64}/${token}`, { password }, { observe: 'response' })
       .subscribe(
-      response => {
-        if (response.status === 201) {
-          this.confirmResetPasswordEvent.next({ success: true });
-        } else {
-          this.confirmResetPasswordEvent.next(
-            {
-              success: false,
-              message: `Backend return http code other than 201: ${response.status}`
-            });
-        }
-      },
-      err => {
-        this.confirmResetPasswordEvent.next({ success: false, message: err });
-      });
+        response => {
+          if (response.status === 201) {
+            this.confirmResetPasswordEvent.next({ success: true });
+          } else {
+            this.confirmResetPasswordEvent.next(
+              {
+                success: false,
+                message: `Backend return http code other than 201: ${response.status}`
+              });
+          }
+        },
+        err => {
+          this.confirmResetPasswordEvent.next({ success: false, message: err });
+        });
   }
 
   register(email: string, password: string) {
@@ -110,8 +109,8 @@ export class AuthService {
 
   activateAccount(uuid: string) {
     return this.http.post(
-      this.accountActivationUrl,
-      { uuid },
+      `${this.activationUrl}${uuid}/`,
+      null,
       { observe: 'response' });
   }
 

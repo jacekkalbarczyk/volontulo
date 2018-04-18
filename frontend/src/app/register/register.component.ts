@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RegisterRequestModel } from 'app/auth.models';
 import { AuthService } from '../auth.service';
 import { Observable } from 'rxjs/Observable';
@@ -9,7 +9,7 @@ import { Params } from '@angular/router';
   selector: 'volontulo-register',
   templateUrl: './register.component.html',
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   registerModel: RegisterRequestModel = {
     email: '',
     password: '',
@@ -39,8 +39,4 @@ export class RegisterComponent implements OnInit {
       }
       );
   }
-
-  ngOnInit() {
-  }
-
 }

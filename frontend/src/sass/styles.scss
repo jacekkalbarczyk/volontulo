@@ -17,3 +17,9 @@
 html {
   font-size: $base-font-size;
 }
+
+/* Temporary hack. We need to raise bootstrap version.*/
+
+.form-check {
+  padding-left: $form-check-input-gutter;
+}

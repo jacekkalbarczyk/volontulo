@@ -41,7 +41,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { PasswordResetConfirmComponent } from './password-reset/password-reset-confirm.component';
 import { OrganizationOffersListComponent } from './organization/organization-offers-list/organization-offers-list.component';
 import { RegisterComponent } from './register/register.component';
-import { AccountActivationComponent } from './account-activation/account-activation.component';
+import { ActivationComponent } from './activation/activation.component';
 
 Raven.config(environment.sentryDSN).install();
 
@@ -86,7 +86,7 @@ const appRoutes: Routes = [
   },
   {
     path: 'activate/:token',
-    component: AccountActivationComponent
+    component: ActivationComponent
   },
   {
     path: 'regulations',
@@ -144,7 +144,7 @@ registerLocaleData(localePl);
     MessagesComponent,
     OrganizationOffersListComponent,
     RegisterComponent,
-    AccountActivationComponent,
+    ActivationComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'volontulo' }),

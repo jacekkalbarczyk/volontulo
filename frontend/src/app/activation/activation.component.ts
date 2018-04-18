@@ -4,10 +4,10 @@ import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
-  selector: 'volontulo-account-activation',
-  templateUrl: './account-activation.component.html',
+  selector: 'volontulo-activation',
+  templateUrl: './activation.component.html',
 })
-export class AccountActivationComponent implements OnInit {
+export class ActivationComponent implements OnInit {
   activationSuccessful: boolean;
   failureMessage: string;
   constructor(private authService: AuthService, private activatedRoute: ActivatedRoute
@@ -20,7 +20,8 @@ export class AccountActivationComponent implements OnInit {
         rsp => {
           this.activationSuccessful = rsp.status === 201;
       },
-        err =>{
+        err => {
+
           this.activationSuccessful = false;
           if(err.status === 400){
             this.failureMessage = 'Użytkownik został już aktywowany';
@@ -29,7 +30,7 @@ export class AccountActivationComponent implements OnInit {
             this.failureMessage = 'Użytkownik nie istnieje';
           }
           else{
-            this.failureMessage = 'epic fail';
+            this.failureMessage = 'Coś poszło nie tak, skontaktuj się z administratorem';
           }
       }
     );
