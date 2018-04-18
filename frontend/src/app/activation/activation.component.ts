@@ -23,13 +23,11 @@ export class ActivationComponent implements OnInit {
         err => {
 
           this.activationSuccessful = false;
-          if(err.status === 400){
+          if (err.status === 400) {
             this.failureMessage = 'Użytkownik został już aktywowany';
-          }
-          else if(err.status === 404){
+          } else if (err.status === 404) {
             this.failureMessage = 'Użytkownik nie istnieje';
-          }
-          else{
+          } else {
             this.failureMessage = 'Coś poszło nie tak, skontaktuj się z administratorem';
           }
       }
