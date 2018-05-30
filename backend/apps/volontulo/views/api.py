@@ -106,7 +106,7 @@ def register_view(request):
 @api_view(['POST'])
 @authentication_classes((CsrfExemptSessionAuthentication,))
 @permission_classes((AllowAny,))
-def activate_view(request, uuid):
+def activate_view(_, uuid):
     """View responsible for activating user account."""
     try:
         profile = UserProfile.objects.get(uuid=uuid)
