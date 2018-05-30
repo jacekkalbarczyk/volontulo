@@ -102,7 +102,6 @@ def register_view(request):
     return Response(status=status.HTTP_201_CREATED)
 
 
-
 @api_view(['POST'])
 @authentication_classes((CsrfExemptSessionAuthentication,))
 @permission_classes((AllowAny,))
