@@ -23,3 +23,7 @@ html {
 .form-check {
   padding-left: $form-check-input-gutter;
 }
+
+input[type=file] {
+  visibility: hidden;
+}
