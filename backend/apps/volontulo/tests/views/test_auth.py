@@ -5,10 +5,8 @@
 """
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.test import Client
 from django.test import TestCase
-from django.test import TransactionTestCase
 
 from apps.volontulo.tests import common
 
