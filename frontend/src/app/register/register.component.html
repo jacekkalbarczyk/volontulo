@@ -20,23 +20,18 @@
     <input type="password" [(ngModel)]="registerModel.password" name="password" class="form-control form-control-lg" required
       #password="ngModel" [ngClass]="{'is-invalid': password.invalid && password.touched}" />
     <div *ngIf="password.invalid && password.touched" class="invalid-feedback">
-
       Pole 'Hasło' jest wymagane.
-
     </div>
   </div>
   <div class="form-check">
-    <input type="checkbox" class="form-check-input" ngModel name="checkboxTA" value="accept" id="checkboxTA" required #checkboxTA="ngModel">
+    <input type="checkbox" class="form-check-input" [checked]="termsAccepted" (change)="termsAccepted = !termsAccepted; showTermsWarning = !termsAccepted"
+    />
     <label for="checkboxTA" class="form-check-label">{{ ACCEPT_TERMS }}*</label>
-    <div *ngIf="checkboxTA.invalid" class="alert alert-danger">
-
-      <div *ngIf="checkboxTA.errors.required">
-        Wymagana zgoda na przetwarzanie danych osobowych.
-      </div>
-
-    </div>
+  </div>
+  <div *ngIf="showTermsWarning" class="alert alert-danger">
+    Wymagana zgoda na przetwarzanie danych osobowych.
   </div>
   <div *ngIf="registrationSuccessful" class="alert alert-info" role="alert">Jeśli podany email jest prawidłowy, powinieneś otrzymać wiadomość z linkiem potwierdzającym.</div>
   <div *ngIf="userIsAuthenticated" class="alert alert-info" role="alert">Wyloguj się, jeśli chcesz zarejestrować użytkownika.</div>
-  <button type="submit" name="submit" class="btn btn-primary" [disabled]="password.errors || email.errors || checkboxTA.errors">Zarejestruj się</button>
+  <button type="submit" name="submit" class="btn btn-primary" [disabled]="password.errors || email.errors">Zarejestruj się</button>
 </form>

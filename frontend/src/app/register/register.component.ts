@@ -17,12 +17,19 @@ export class RegisterComponent {
   ACCEPT_TERMS = 'Wyrażam zgodę na przetwarzanie moich danych osobowych';
   registrationSuccessful = false;
   userIsAuthenticated = false;
+  termsAccepted = false;
+  showTermsWarning = false;
 
   constructor(private authService: AuthService,
   ) {
   }
 
   register(): void {
+    if (!this.termsAccepted) {
+      this.showTermsWarning = true;
+      return;
+    }
+
     this.registrationSuccessful = false;
     this.userIsAuthenticated = false;
     this.authService.register(this.registerModel.email, this.registerModel.password)
