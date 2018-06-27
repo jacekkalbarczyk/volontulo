@@ -27,8 +27,9 @@ export class RegisterComponent {
 
   register(): void {
     this.checkboxTA.control.markAsDirty();
-    if (!this.checkboxTA.control.value)
+    if (!this.checkboxTA.control.value){
       return;
+    }
 
     this.registrationSuccessful = false;
     this.userIsAuthenticated = false;
