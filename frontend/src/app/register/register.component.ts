@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { RegisterRequestModel } from 'app/auth.models';
 import { AuthService } from '../auth.service';
 import { Observable } from 'rxjs/Observable';
 import { RedirectComponent } from 'app/redirect.component';
 import { Params } from '@angular/router';
+import { NgControl } from '@angular/forms';
 
 @Component({
   selector: 'volontulo-register',
@@ -17,18 +18,17 @@ export class RegisterComponent {
   ACCEPT_TERMS = 'Wyrażam zgodę na przetwarzanie moich danych osobowych';
   registrationSuccessful = false;
   userIsAuthenticated = false;
-  termsAccepted = false;
-  showTermsWarning = false;
+
+  @ViewChild('checkboxTA') public checkboxTA: NgControl;
 
   constructor(private authService: AuthService,
   ) {
   }
 
   register(): void {
-    if (!this.termsAccepted) {
-      this.showTermsWarning = true;
+    this.checkboxTA.control.markAsDirty();
+    if (!this.checkboxTA.control.value)
       return;
-    }
 
     this.registrationSuccessful = false;
     this.userIsAuthenticated = false;
@@ -39,11 +39,11 @@ export class RegisterComponent {
         }
         return Observable.of(null);
       },
-      err => {
-        if (err.status === 400) {
-          this.userIsAuthenticated = true;
+        err => {
+          if (err.status === 400) {
+            this.userIsAuthenticated = true;
+          }
         }
-      }
       );
   }
 }
