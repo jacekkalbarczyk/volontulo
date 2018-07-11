@@ -11,7 +11,6 @@
       required
       email
       maxlength="150"
-      pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$"
       #email="ngModel" />
     <div *ngIf="email.invalid && (email.dirty || email.touched)" class="invalid-feedback">
       <div *ngIf="email.errors.required">

@@ -40,11 +40,11 @@ export class RegisterComponent {
         }
         return Observable.of(null);
       },
-        err => {
-          if (err.status === 400) {
-            this.userIsAuthenticated = true;
-          }
+      err => {
+        if (err.status === 400) {
+          this.userIsAuthenticated = true;
         }
+      }
       );
   }
 }
