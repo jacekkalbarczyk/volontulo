@@ -33,6 +33,7 @@ import { IconComponent } from './icon/icon.component';
 import { IconLabelComponent } from './icon-label/icon-label.component';
 import { BannerComponent } from './banner/banner.component';
 import { MessagesComponent } from './messages/messages.component';
+import { MessagesService } from './messages/messages.service';
 import { OrganizationsComponent } from './organizations/organizations.component';
 import { HttpWithCredentialsInterceptor, HttpXsrfInterceptor } from './http-interceptor';
 import { FaqOrganizationsComponent } from './static/faq-organizations.component';
@@ -48,6 +49,12 @@ import { RegisterComponent } from './register/register.component';
 import { ActivationComponent } from './activation/activation.component';
 import { LoggedInGuard } from './guards/loggedInGuard.service';
 import { LoggedOutGuard } from './guards/loggedOutGuard.service';
+import { AccountComponent} from './account/account.component';
+import { ContactComponent } from './contact/contact.component';
+import { ContactResolver } from './resolvers';
+import { FormErrorComponent } from './form-error/form-error.component';
+import { ContactService } from './contact.service';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 Raven.config(environment.sentryDSN).install();
 
@@ -142,8 +149,30 @@ const appRoutes: Routes = [
     canActivate: [LoggedOutGuard],
   },
   {
+    // change path from "/me-working-path" to "/me" when the whole user view is ready
+    path: 'me-working-path',
+    component: AccountComponent,
+    canActivate: [LoggedInGuard]
+  },
+  {
+    path: 'contact',
+    component: ContactComponent,
+    resolve: {
+      contactData: ContactResolver,
+    },
+  },
+  {
+    path: 'me',
+    component: UserProfileComponent,
+    canActivate: [LoggedInGuard],
+  },
+  {
     path: '**',
     component: RedirectComponent
+  },
+  {
+    path: '**',
+    component: RedirectComponent,
   },
 ];
 
@@ -180,7 +209,12 @@ registerLocaleData(localePl);
     RegisterComponent,
     ActivationComponent,
     OrganizationCreateComponent,
-    OrganizationsListComponent
+    OrganizationsListComponent,
+    AccountComponent,
+    ContactComponent,
+    FormErrorComponent,
+    OrganizationsListComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'volontulo' }),
@@ -190,15 +224,19 @@ registerLocaleData(localePl);
     HttpClientXsrfModule.withOptions({ cookieName: 'csrftoken' }),
     NgbModule.forRoot(),
     RouterModule.forRoot(appRoutes),
-    CookieModule.forRoot()
+    CookieModule.forRoot(),
+    ReactiveFormsModule,
   ],
   providers: [
     AuthService,
     OffersService,
     OrganizationService,
+    MessagesService,
     UserService,
     LoggedInGuard,
     LoggedOutGuard,
+    ContactResolver,
+    ContactService,
     { provide: LOCALE_ID, useValue: 'pl' },
     { provide: WindowService, useFactory: WindowFactory, deps: [PLATFORM_ID] },
     { provide: ErrorHandler, useFactory: ErrorHandlerFactory },
