@@ -2,7 +2,7 @@ import { ErrorHandler, NgModule, PLATFORM_ID, LOCALE_ID } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, Location } from '@angular/common';
 import localePl from '@angular/common/locales/pl';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieModule } from 'ngx-cookie';
@@ -29,8 +29,6 @@ import { RegulationsComponent } from './static/regulations.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './auth.service';
 import { OfferDetailComponent } from './offers/offer-detail/offer-detail.component';
-import { IconComponent } from './icon/icon.component';
-import { IconLabelComponent } from './icon-label/icon-label.component';
 import { BannerComponent } from './banner/banner.component';
 import { MessagesComponent } from './messages/messages.component';
 import { MessagesService } from './messages/messages.service';
@@ -49,12 +47,14 @@ import { RegisterComponent } from './register/register.component';
 import { ActivationComponent } from './activation/activation.component';
 import { LoggedInGuard } from './guards/loggedInGuard.service';
 import { LoggedOutGuard } from './guards/loggedOutGuard.service';
+import { MetatagsService } from './metatags.service';
 import { AccountComponent} from './account/account.component';
 import { ContactComponent } from './contact/contact.component';
 import { ContactResolver } from './resolvers';
 import { FormErrorComponent } from './form-error/form-error.component';
 import { ContactService } from './contact.service';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 Raven.config(environment.sentryDSN).install();
 
@@ -192,8 +192,6 @@ registerLocaleData(localePl);
     RegulationsComponent,
     LoginComponent,
     OfferDetailComponent,
-    IconComponent,
-    IconLabelComponent,
     BannerComponent,
     OrganizationsComponent,
     FaqOrganizationsComponent,
@@ -226,8 +224,10 @@ registerLocaleData(localePl);
     RouterModule.forRoot(appRoutes),
     CookieModule.forRoot(),
     ReactiveFormsModule,
+    FontAwesomeModule,
   ],
   providers: [
+    MetatagsService,
     AuthService,
     OffersService,
     OrganizationService,
@@ -237,6 +237,7 @@ registerLocaleData(localePl);
     LoggedOutGuard,
     ContactResolver,
     ContactService,
+    Location,
     { provide: LOCALE_ID, useValue: 'pl' },
     { provide: WindowService, useFactory: WindowFactory, deps: [PLATFORM_ID] },
     { provide: ErrorHandler, useFactory: ErrorHandlerFactory },

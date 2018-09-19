@@ -42,6 +42,8 @@ from apps.volontulo.serializers import (
 )
 from apps.volontulo.views import logged_as_admin
 
+from apps.volontulo.serializers import OfferSerializer
+
 
 @api_view(['POST'])
 @authentication_classes((CsrfExemptSessionAuthentication,))
@@ -59,12 +61,18 @@ def login_view(request):
         login(request, user)
 
         return Response(
-            serializers.UserSerializer(user).data,
+            serializers.UserSerializer(
+                user,
+                context={'request': request},
+            ).data,
             status=status.HTTP_200_OK,
         )
 
     return Response(
-        serializers.UserSerializer(request.user).data,
+        serializers.UserSerializer(
+            request.user,
+            context={'request': request},
+        ).data,
         status=status.HTTP_400_BAD_REQUEST,
     )
 
@@ -313,7 +321,10 @@ class CurrentUser(APIView):
     def get(self, request):
         """Gets current user."""
         return Response(
-            serializers.UserSerializer(request.user).data,
+            serializers.UserSerializer(
+                request.user,
+                context={'request': request}
+            ).data,
             status=status.HTTP_200_OK,
         )
 
@@ -325,7 +336,10 @@ class CurrentUser(APIView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             return Response(
-                serializers.UserSerializer(user).data,
+                serializers.UserSerializer(
+                    user,
+                    context={'request': request},
+                ).data,
                 status=status.HTTP_200_OK,
             )
 
@@ -349,3 +363,18 @@ class PasswordChangeView(APIView):
         user.set_password(data['password_new'])
         user.save()
         return Response({}, status.HTTP_200_OK)
+
+
+class JoinedOffers(APIView):
+    """Get info about all offers that user joined."""
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (CsrfExemptSessionAuthentication,)
+
+    def get(self, request):
+        offers = request.user.offer_set.all()
+        return Response(
+            OfferSerializer(
+                offers, many=True, context={'request': request}
+            ).data,
+            status.HTTP_200_OK
+        )

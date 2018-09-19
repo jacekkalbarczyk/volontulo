@@ -113,32 +113,33 @@ class OfferSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Offer
         fields = (
+            'action_ongoing',
             'action_status',
+            'benefits',
+            'constant_coop',
+            'description',
             'finished_at',
             'id',
             'image',
+            'joined',
             'location',
             'offer_status',
             'organization',
-            'slug',
-            'started_at',
-            'title',
-            'url',
-            'description',
-            'benefits',
-            'requirements',
-            'time_commitment',
-            'time_period',
             'recruitment_end_date',
             'recruitment_start_date',
+            'recruitment_status',
+            'requirements',
             'reserve_recruitment',
-            'reserve_recruitment_start_date',
             'reserve_recruitment_end_date',
-            'action_ongoing',
-            'constant_coop',
-            'volunteers_limit',
+            'reserve_recruitment_start_date',
             'reserve_volunteers_limit',
-            'joined',
+            'slug',
+            'started_at',
+            'time_commitment',
+            'time_period',
+            'title',
+            'url',
+            'volunteers_limit',
         )
     date_fields = [
         'started_at',
@@ -260,12 +261,12 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
         )
 
-    def get_organizations(self, obj):  # pylint:disable=no-self-use
+    def get_organizations(self, obj):
         """Returns organizations that user belongs to."""
         qs = obj.userprofile.organizations.all()
-        return OrganizationSerializer(
-            qs, many=True, context={'user': obj},
-        ).data
+        return OrganizationSerializer(qs, many=True, context={
+            'request': self.context['request'],
+        }).data
 
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get(
