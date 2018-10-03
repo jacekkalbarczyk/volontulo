@@ -55,6 +55,7 @@ import { FormErrorComponent } from './form-error/form-error.component';
 import { ContactService } from './contact.service';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { OffersBoxComponent } from './offers/offers-box/offers-box.component';
 
 Raven.config(environment.sentryDSN).install();
 
@@ -212,7 +213,8 @@ registerLocaleData(localePl);
     ContactComponent,
     FormErrorComponent,
     OrganizationsListComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    OffersBoxComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'volontulo' }),

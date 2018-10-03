@@ -5,7 +5,7 @@
   </div>
   <div class="card-body">
     <h2 class="card-title offer-title">
-      <a [routerLink]="['offers', offer.slug, offer.id]" class="offer-link">{{ offer.title }}</a>
+      <a [routerLink]="['/offers', offer.slug, offer.id]" class="offer-link">{{ offer.title }}</a>
     </h2>
     <ul class="list-group list-group-flush">
       <li class="list-group-item">
@@ -21,7 +21,7 @@
       </li>
       <div class="offer-organizer">
         <span>Organizator:
-        <a [routerLink]="['organizations', offer.organization.slug, offer.organization.id]">
+        <a [routerLink]="['/organizations', offer.organization.slug, offer.organization.id]">
         {{ offer.organization.name }}</a></span>
       </div>
     </ul>

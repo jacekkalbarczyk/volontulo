@@ -35,4 +35,8 @@ export class OffersService {
     return this.http.put(`${environment.apiRoot}/offers/${id}/`, offer);
   }
 
+  getUserOffers(): Observable<Offer[]> {
+    return this.http.get<Offer[]>(`${environment.apiRoot}/joined-offers/`)
+      .map(offers => offers.map(offer => loadDefaultImage(offer)));
+  }
 }
