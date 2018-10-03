@@ -1,10 +1,10 @@
-<div *ngIf="!offers.length; else offersExist">
+<div *ngIf="(offers$ | async)?.length==0; else offersExist">
   <p class="card-text">Zgłoś się w jednej z dostępnych ofert wolontariatu i zapełnij to miejsce.</p>
 </div>
 
 <ng-template #offersExist>
   <div class="card-deck row">
-    <div class="col-12 col-sm-6 col-lg-4 pb-3" *ngFor="let offer of offers">
+    <div class="col-12 col-sm-6 col-lg-4 pb-3" *ngFor="let offer of (offers$ | async)">
       <volontulo-homepage-offer [offer]="offer" class="card mx-0 h-20"></volontulo-homepage-offer>
     </div>
   </div>

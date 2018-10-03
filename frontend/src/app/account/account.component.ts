@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 
 import { AuthService } from '../auth.service';
 import { Organization } from '../organization/organization.model';
-import { OffersBoxComponent } from '../offers/offers-box/offers-box.component';
 
 @Component({
   selector: 'volontulo-account',
