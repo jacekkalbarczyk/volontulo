@@ -56,6 +56,7 @@ import { ContactService } from './contact.service';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { OffersBoxComponent } from './offers/offers-box/offers-box.component';
+import { IMaskModule } from 'angular-imask';
 
 Raven.config(environment.sentryDSN).install();
 
@@ -227,6 +228,7 @@ registerLocaleData(localePl);
     CookieModule.forRoot(),
     ReactiveFormsModule,
     FontAwesomeModule,
+    IMaskModule,
   ],
   providers: [
     MetatagsService,
