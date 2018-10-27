@@ -10,8 +10,8 @@ import { Observable } from 'rxjs/Observable';
 })
 export class OffersBoxComponent implements OnInit {
   public offers$: Observable<Offer[]>;
-  constructor(private offersService: OffersService) {
-  }
+
+  constructor(private offersService: OffersService) { }
 
   ngOnInit() {
     this.offers$ = this.offersService.getUserOffers();
