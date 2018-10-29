@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { HomepageOfferComponent } from '../../homepage-offer/homepage-offer.component';
-import { OffersBoxComponent } from './offers-box.component';
-import { OffersService } from '../../homepage-offer/offers.service';
+import { HomepageOfferComponent } from 'app/components/homepage-offer/homepage-offer.component';
+import { OffersBoxComponent } from 'app/components/offers/offers-box/offers-box.component';
+import { OffersService } from 'app/services/offers.service';
 
 describe('OffersBoxComponent', () => {
   let component: OffersBoxComponent;

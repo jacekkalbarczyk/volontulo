@@ -9,7 +9,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieModule } from 'ngx-cookie';
 import * as Raven from 'raven-js';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { OffersBoxComponent } from './offers/offers-box/offers-box.component';
 import { IMaskModule } from 'angular-imask';
 
 import { AppComponent } from 'app/app.component';
@@ -26,6 +25,7 @@ import { HomepageOfferComponent } from 'app/components/homepage-offer/homepage-o
 import { LoginComponent } from 'app/components/login/login.component';
 import { MessagesComponent } from 'app/components/messages/messages.component';
 import { CreateOfferComponent } from 'app/components/offers/create-offer/create-offer.component';
+import { OffersBoxComponent } from 'app/components/offers/offers-box/offers-box.component';
 import { OfferDetailComponent } from 'app/components/offers/offer-detail/offer-detail.component';
 import { OrganizationComponent } from 'app/components/organization/organization.component';
 import { OrganizationContactComponent } from 'app/components/organization/organization-contact/organization-contact.component';
