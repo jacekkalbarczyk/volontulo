@@ -30,7 +30,9 @@ backend:
     - /volontulo/backend/apps/volontulo/node_modules
 
 db:
-  image: postgres
+  image: postgres:9.5
+  # ports:
+  #   - 5432:5432
   environment:
     POSTGRES_DB: volontulo
     POSTGRES_USER: volontulo
